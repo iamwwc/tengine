@@ -486,6 +486,7 @@ ngx_http_init_phase_handlers(ngx_conf_t *cf, ngx_http_core_main_conf_t *cmcf)
         + use_rewrite      /* post rewrite phase */
         + use_access;      /* post access phase */
 
+    // CC-NGINX 将 phase handler放入 phase engine
     for (i = 0; i < NGX_HTTP_LOG_PHASE; i++) {
         n += cmcf->phases[i].handlers.nelts;
     }

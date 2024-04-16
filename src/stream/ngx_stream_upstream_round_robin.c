@@ -544,7 +544,7 @@ ngx_stream_upstream_get_peer(ngx_stream_upstream_rr_peer_data_t *rrp)
 #if (NGX_SUPPRESS_WARN)
     p = 0;
 #endif
-
+    // 遍历upstream下全部的peer，获取best peer
     for (peer = rrp->peers->peer, i = 0;
          peer;
          peer = peer->next, i++)

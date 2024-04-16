@@ -1,0 +1,18 @@
+ngx_addon_name=ngx_http_helloworld_module
+
+HTTP_HELLOWORLD_MODULE="\
+  $ngx_addon_dir/ngx_http_helloworld.c"
+
+have=NGX_HTTP_HELLOWORLD . auto/have
+
+if test -n "$ngx_module_link"; then
+  ngx_module_type=HTTP
+  ngx_module_name=$ngx_addon_name
+  ngx_module_srcs="$HTTP_HELLOWORLD_MODULE"
+  . auto/module
+else
+  NGX_ADDON_SRCS="$NGX_ADDON_SRCS $HTTP_HELLOWORLD_MODULE"
+  CORE_LIBS="$CORE_LIBS $ngx_feature_libs"
+  CORE_INCS="$CORE_INCS $ngx_module_incs"
+fi
+

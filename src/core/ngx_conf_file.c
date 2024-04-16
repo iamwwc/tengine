@@ -453,6 +453,8 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
                 conf = &(((void **) cf->ctx)[cf->cycle->modules[i]->index]);
 
             } else if (cf->ctx) {
+                // char * 指向 char，char为 1 byte
+                // 所以 (char *) cf->ctx + cmd->conf 为基地址往后的第八个字节-1
                 confp = *(void **) ((char *) cf->ctx + cmd->conf);
 
                 if (confp) {

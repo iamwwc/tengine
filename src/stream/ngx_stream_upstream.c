@@ -346,6 +346,8 @@ ngx_stream_upstream(ngx_conf_t *cf, ngx_command_t *cmd, void *dummy)
         return NGX_CONF_ERROR;
     }
 
+    // 从这里可以看出 **srv_conf 的格式
+    // array里放array
     ctx->srv_conf[ngx_stream_upstream_module.ctx_index] = uscf;
 
     uscf->srv_conf = ctx->srv_conf;
