@@ -453,6 +453,17 @@ ngx_conf_handler(ngx_conf_t *cf, ngx_int_t last)
                 conf = &(((void **) cf->ctx)[cf->cycle->modules[i]->index]);
 
             } else if (cf->ctx) {
+                // char * 指向 char，char为 1 byte
+                // 所以 (char *) cf->ctx + cmd->conf 为基地址往后的第八个字节-1
+
+                // 在http main block中，cf->ctx 是 ngx_http_conf_ctx_t
+                // typedef struct {
+                //     void        **main_conf;
+                //     void        **srv_conf;
+                //     void        **loc_conf;
+                // } ngx_http_conf_ctx_t;
+                // 如果 conf 是NGX_HTTP_LOC_CONF_OFFSET
+                // confp 是 当前 module 在 ngx_http_conf_ctx_t#loc_conf中对应的location_conf地址
                 confp = *(void **) ((char *) cf->ctx + cmd->conf);
 
                 if (confp) {

@@ -1,0 +1,13 @@
+ngx_addon_name=ngx_http_cc_access_module
+#ngx_deps="$ngx_addon_dir/ngx_http_cc_filter_refresh.h"
+ngx_deps=""
+
+HTTP_CC_ACCESS_SRCS="\
+    $ngx_addon_dir/ngx_http_cc_access_module.c"
+
+ngx_module_type=HTTP
+ngx_module_name=$ngx_addon_name
+ngx_module_srcs="$HTTP_CC_ACCESS_SRCS"
+ngx_module_deps="$ngx_deps"
+. auto/module
+

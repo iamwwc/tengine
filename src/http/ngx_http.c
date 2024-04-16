@@ -486,6 +486,7 @@ ngx_http_init_phase_handlers(ngx_conf_t *cf, ngx_http_core_main_conf_t *cmcf)
         + use_rewrite      /* post rewrite phase */
         + use_access;      /* post access phase */
 
+    // CC-NGINX 将 phase handler放入 phase engine
     for (i = 0; i < NGX_HTTP_LOG_PHASE; i++) {
         n += cmcf->phases[i].handlers.nelts;
     }
@@ -597,6 +598,24 @@ ngx_http_merge_servers(ngx_conf_t *cf, ngx_http_core_main_conf_t *cmcf,
         ctx->srv_conf = cscfp[s]->ctx->srv_conf;
 
         if (module->merge_srv_conf) {
+            // 指令合并策略并没有强制要求，否则NGINX不会暴露merge_srv_conf的hook
+            // 但对于树形结构的配置，指令出现在parent语义上要对child生效，除非child自身也有指令
+            // 比如access_log，可以在http_main_block, server block 出现
+            // 合并策略是：如果child此项配置为默认值，且parent有配置，child就需要使用parent的配置
+            // 这也是大多数配置项合并代码都长得差不多的原因
+            // /foo 开启
+            // /bar 由于没有access_log配置，被parent merge，所以关闭
+            // server {
+            //    access_log off;
+            //    location /foo {
+            //        access_log /data/access.log debug;
+            //    }
+            //    location /bar {
+            // 
+            //    }
+            //}
+
+            // call ngx_http_core_merge_srv_conf
             rv = module->merge_srv_conf(cf, saved.srv_conf[ctx_index],
                                         cscfp[s]->ctx->srv_conf[ctx_index]);
             if (rv != NGX_CONF_OK) {

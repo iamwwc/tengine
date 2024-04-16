@@ -14,6 +14,10 @@
 ngx_int_t
 ngx_shm_alloc(ngx_shm_t *shm)
 {
+    //  MAP_ANONYMOUS
+    //           The mapping is not backed by any file; its contents are
+    //           initialized to zero
+    // MAP_ANON flag 初始化后的共享内存默认初始化为0
     shm->addr = (u_char *) mmap(NULL, shm->size,
                                 PROT_READ|PROT_WRITE,
                                 MAP_ANON|MAP_SHARED, -1, 0);
