@@ -4,17 +4,12 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "launch nginx",
+            "label": "gen compile_commands.json",
             "type": "shell",
-            "command": "${workspaceFolder}/target/sbin/nginx",
-            "args": ["-c", "${workspaceFolder}/target/conf/nginx.conf", "&"],
-            "isBackground": false,
-            "presentation": {
-                "reveal": "silent",
-                "revealProblems": "onProblem",
-                "close": true
-            },
-            "dependsOn": ["build"]
+            "command": "bear -- ./local_build.sh",
+            "dependsOrder": "sequence",
+            "dependsOn": ["clean", "configure"],
+            "problemMatcher": []
         },
         {
             "label": "kill nginx",
@@ -26,6 +21,19 @@
                 "revealProblems": "onProblem",
                 "close": true
             }
+        },
+        {
+            "label": "launch nginx",
+            "type": "shell",
+            "command": "${workspaceFolder}/target/sbin/nginx",
+            "args": ["-c", "${workspaceFolder}/target/conf/nginx.conf", "&"],
+            "isBackground": false,
+            "presentation": {
+                "reveal": "silent",
+                "revealProblems": "onProblem",
+                "close": true
+            },
+            "dependsOn": ["build"]
         },
         {
             "label": "configure",
@@ -53,14 +61,6 @@
             "label": "compile",
             "type": "shell",
             "command": "./local_build.sh",
-            "problemMatcher": []
-        },
-        {
-            "label": "gen compile_commands.json",
-            "type": "shell",
-            "command": "bear ./local_build.sh",
-            "dependsOrder": "sequence",
-            "dependsOn": ["clean", "configure"],
             "problemMatcher": []
         }
     ]
