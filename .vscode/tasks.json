@@ -31,11 +31,23 @@
             "label": "configure",
             "type": "shell",
             "command": "./configure.sh",
+            "problemMatcher": []
+        },
+        {
+            "label": "full-rebuild",
+            "type": "shell",
+            "command": "./full_rebuild.sh",
             "problemMatcher": [],
             "group": {
                 "kind": "build",
                 "isDefault": true
             }
+        },
+        {
+            "label": "clean",
+            "type": "shell",
+            "command": "make clean",
+            "problemMatcher": []
         },
         {
             "label": "compile",
@@ -47,7 +59,8 @@
             "label": "gen compile_commands.json",
             "type": "shell",
             "command": "bear ./local_build.sh",
-            "dependsOn": ["configure"],
+            "dependsOrder": "sequence",
+            "dependsOn": ["clean", "configure"],
             "problemMatcher": []
         }
     ]

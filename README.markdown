@@ -1,7 +1,7 @@
 ### 初始化
 
 ```bash
-./setup.sh
+./configure.sh
 ```
 
 ### 编译
@@ -13,7 +13,7 @@
 ### 运行
 
 ```bash
-sudo ./target/sbin/nginx -p target -c conf/nginx.conf
+sudo ./target/sbin/nginx -p target/ -c conf/nginx.conf
 ```
 
 ### 签发证书

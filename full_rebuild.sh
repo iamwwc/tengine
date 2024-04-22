@@ -1,4 +1,4 @@
 #!/usr/bin/env bash
 
-./setup.sh
+./configure.sh
 ./local_build.sh
