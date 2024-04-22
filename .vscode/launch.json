@@ -9,7 +9,7 @@
             "request": "launch",
             "name": "Master",
             "program": "${workspaceFolder}/target/sbin/nginx",
-            "args": ["-c", "${workspaceFolder}/target/conf/nginx.conf"],
+            "args": ["-c", "${workspaceFolder}/target/conf/nginx.conf", "-p", "${workspaceFolder}/target/"],
             "cwd": "${workspaceFolder}/target/sbin",
             "console": "integratedTerminal",
             "postDebugTask": "kill nginx",
