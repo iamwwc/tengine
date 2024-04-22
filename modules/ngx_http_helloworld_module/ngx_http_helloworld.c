@@ -2,7 +2,10 @@
 #include <ngx_core.h>
 #include <ngx_http.h>
 
-struct ngx_http_helloworld_main_conf_s {};
+struct ngx_http_helloworld_main_conf_s {
+    ngx_int_t var_uri_index;
+    ngx_cycle_t *cycle;
+};
 
 typedef struct ngx_http_helloworld_main_conf_s ngx_http_helloworld_main_conf_t;
 
@@ -76,11 +79,23 @@ ngx_module_t ngx_http_helloworld_module = {
     NGX_MODULE_V1_PADDING};
 
 static ngx_int_t ngx_http_log_filter_log_handler(ngx_http_request_t *r) {
+    ngx_http_variable_value_t *v;
+    ngx_http_helloworld_main_conf_t *main_conf =
+        ngx_http_get_module_main_conf(r, ngx_http_helloworld_module);
     ngx_http_helloworld_loc_conf_t *loc =
         ngx_http_get_module_loc_conf(r, ngx_http_helloworld_module);
+    ngx_log_error(NGX_LOG_INFO, r->connection->log, 0,
+                  "ngx_http_helloworld handler called!");
     if (loc->echo.len != 0) {
-        ngx_log_error(NGX_LOG_INFO, r->connection->log, 0,
-                      "diretive helloworld msg %V", &loc->echo);
+        v = ngx_http_get_indexed_variable(r, main_conf->var_uri_index);
+        if (v == NULL || v->not_found) {
+            ngx_log_error(NGX_LOG_ERR, r->connection->log, 0,
+                          "variable not found!");
+        } else {
+            ngx_log_error(NGX_LOG_INFO, main_conf->cycle->log, 0,
+                          "diretive helloworld msg %V at %*s", &loc->echo,
+                          v->len, v->data);
+        }
     }
     return NGX_OK;
 }
@@ -151,10 +166,19 @@ static void *ngx_http_helloworld_create_main_conf(ngx_conf_t *cf) {
 }
 
 static char *ngx_http_helloworld_init_main_conf(ngx_conf_t *cf, void *conf) {
+    ngx_http_helloworld_main_conf_t *main_conf = conf;
     ngx_log_debug0(NGX_LOG_DEBUG_HTTP, cf->cycle->log, 0,
                    "helloworld init_main_conf");
     ngx_log_error(NGX_LOG_NOTICE, cf->cycle->log, 0,
                   "helloworld init_main_conf notice");
+    ngx_str_t key = ngx_string("request_uri");
+    main_conf->var_uri_index = ngx_http_get_variable_index(cf, &key);
+    if (main_conf->var_uri_index == NGX_ERROR) {
+        ngx_log_error(NGX_LOG_EMERG, cf->cycle->log, 0, "bad variable key %V",
+                      &key);
+        return NGX_CONF_ERROR;
+    }
+    main_conf->cycle = cf->cycle;
     return NGX_CONF_OK;
 }
 
@@ -186,6 +210,7 @@ static void *ngx_http_helloworld_create_loc_conf(ngx_conf_t *cf) {
     ngx_log_error(NGX_LOG_NOTICE, cf->cycle->log, 0,
                   "helloworld create_loc_conf notice");
     ngx_str_null(&conf->echo);
+
     return conf;
 }
 
