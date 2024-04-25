@@ -460,8 +460,9 @@ static ngx_int_t ngx_http_cc_access_init_module(ngx_cycle_t *cycle) {
     ngx_int_t ret = NGX_OK;
     ngx_pool_t *temp_pool = NULL;
     ngx_http_cc_access_main_conf_t *main_conf;
-    u_char *filedata = NULL;
-    ngx_uint_t filesize = 0;
+    ngx_str_t empty_file = ngx_string("");
+    u_char *filedata = empty_file.data;
+    ngx_uint_t filesize = empty_file.len;
     main_conf =
         ngx_http_cycle_get_module_main_conf(cycle, ngx_http_cc_access_module);
     temp_pool = ngx_create_pool(NGX_CYCLE_POOL_SIZE, cycle->log);
@@ -470,10 +471,12 @@ static ngx_int_t ngx_http_cc_access_init_module(ngx_cycle_t *cycle) {
         goto out;
     }
 
-    ret = ngx_http_cc_access_load_from_file(
-        cycle, temp_pool, main_conf->iplist_path, &filedata, &filesize);
-    if (ret != NGX_OK) {
-        goto out;
+    if (main_conf->iplist_path.data != NULL) {
+        ret = ngx_http_cc_access_load_from_file(
+            cycle, temp_pool, main_conf->iplist_path, &filedata, &filesize);
+        if (ret != NGX_OK) {
+            goto out;
+        }
     }
     ret = ngx_http_cc_access_add(cycle, (char *)filedata, filesize);
 out:
