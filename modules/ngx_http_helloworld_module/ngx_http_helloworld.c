@@ -127,9 +127,7 @@ static ngx_int_t ngx_http_helloworld_pre_conf(ngx_conf_t *cf) {
 static ngx_int_t
 ngx_http_helloworld_response_header_filter(ngx_http_request_t *r) {
     ngx_log_error(NGX_LOG_NOTICE, r->connection->log, 0,
-                  "http response header filter");
-    ngx_log_error(NGX_LOG_NOTICE, r->connection->log, 0,
-                  "http response body filter");
+                  "http helloworld response header filter");
     return ngx_http_next_header_filter(r);
 }
 
