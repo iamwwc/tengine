@@ -14,7 +14,7 @@
         {
             "label": "kill nginx",
             "type": "shell",
-            "command": ["pgrep -P 1 -f nginx | xargs kill -TERM; exit 0"],
+            "command": ["pkill nginx;exit 0"],
             "presentation": {
                 "clear": true,
                 "reveal": "silent",

@@ -528,7 +528,7 @@ static ngx_int_t ngx_http_cc_access_postread_handler(ngx_http_request_t *r) {
                                 &r->connection->addr_text);
     if (node != NULL) {
         ngx_rwlock_unlock(main_conf->rwlock);
-        ngx_log_error(NGX_LOG_WARN, main_conf->cycle->log, 0,
+        ngx_log_error(NGX_LOG_INFO, main_conf->cycle->log, 0,
                       "request path %V addr %V blocked", &r->uri,
                       &r->connection->addr_text);
         // found
