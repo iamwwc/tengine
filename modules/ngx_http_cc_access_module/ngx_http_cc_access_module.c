@@ -419,6 +419,12 @@ static ngx_int_t ngx_http_cc_access_load_from_file(ngx_cycle_t *cycle,
         ret = NGX_ERROR;
         goto out;
     }
+    // 文件格式
+    // 127.0.0.1
+    // 0.0.0.0
+    // 0.0.0.1
+    // 0.0.0.2
+    // 0.0.0.3/8
     file.name = filename;
     file.log = cycle->log;
     file.fd = ngx_openat_file(NGX_AT_FDCWD, file.name.data, NGX_FILE_RDONLY,
@@ -519,7 +525,7 @@ static ngx_int_t ngx_http_cc_access_postread_handler(ngx_http_request_t *r) {
                                 &r->connection->addr_text);
     if (node != NULL) {
         ngx_rwlock_unlock(main_conf->rwlock);
-        ngx_log_error(NGX_LOG_INFO, main_conf->cycle->log, 0,
+        ngx_log_error(NGX_LOG_WARN, main_conf->cycle->log, 0,
                       "request path %V addr %V blocked", &r->uri,
                       &r->connection->addr_text);
         // found

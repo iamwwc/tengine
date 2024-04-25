@@ -26,6 +26,8 @@ static char *ngx_http_helloworld_merge_srv_conf(ngx_conf_t *cf, void *prev,
 static void *ngx_http_helloworld_create_loc_conf(ngx_conf_t *cf);
 static char *ngx_http_helloworld_merge_loc_conf(ngx_conf_t *cf, void *prev,
                                                 void *conf);
+static ngx_http_output_header_filter_pt ngx_http_next_header_filter;
+static ngx_http_output_body_filter_pt   ngx_http_next_body_filter;
 
 static ngx_int_t ngx_http_helloworld_init_process(ngx_cycle_t *cycle);
 static ngx_command_t ngx_http_helloworld_commands[] = {
@@ -93,7 +95,7 @@ static ngx_int_t ngx_http_log_filter_log_handler(ngx_http_request_t *r) {
                           "variable not found!");
         } else {
             ngx_log_error(NGX_LOG_INFO, main_conf->cycle->log, 0,
-                          "diretive helloworld msg %V at %*s", &loc->echo,
+                          "directive helloworld msg %V at %*s", &loc->echo,
                           v->len, v->data);
         }
     }
@@ -119,10 +121,30 @@ static ngx_int_t ngx_http_helloworld_pre_conf(ngx_conf_t *cf) {
     return NGX_OK;
 }
 
+static ngx_int_t ngx_http_helloworld_header_filter(ngx_http_request_t *r) {
+    ngx_log_error(NGX_LOG_NOTICE, r->connection->log,0, "http header filter , call next header filter");
+    ngx_log_error(NGX_LOG_NOTICE, r->connection->log,0, "http body filter, call next body filter");
+    return ngx_http_next_header_filter(r);
+}
+
+static ngx_int_t ngx_http_helloworld_body_filter(ngx_http_request_t *r, ngx_chain_t *body) {
+    return ngx_http_next_body_filter(r, body);
+}
+
 static ngx_int_t ngx_http_helloworld_post_conf(ngx_conf_t *cf) {
     ngx_log_error(NGX_LOG_NOTICE, cf->cycle->log, 0,
                   "helloworld post_conf notice");
     ngx_http_helloworld_set_helloworld_handler(cf->cycle);
+
+    // static ngx_http_next_header_filter 内部访问，ngx_http_top_header_filter 是其他模块的filter
+    // 存储下个module的filter，作为helloworld 的 next_header_filter
+    ngx_http_next_header_filter = ngx_http_top_header_filter;
+    // 再将自己的filter放到top_header_filter，让其他模块存起来，作为他们模块的下一个 next_header_filter
+    ngx_http_top_header_filter = ngx_http_helloworld_header_filter;
+
+    // body_filter 同理上面的 header_filter
+    ngx_http_next_body_filter = ngx_http_top_body_filter;
+    ngx_http_top_body_filter = ngx_http_helloworld_body_filter;
     return NGX_OK;
 }
 
