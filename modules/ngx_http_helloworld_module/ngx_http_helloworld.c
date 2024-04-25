@@ -164,7 +164,8 @@ static ngx_int_t ngx_http_helloworld_post_conf(ngx_conf_t *cf) {
     ngx_http_next_body_filter = ngx_http_top_body_filter;
     ngx_http_top_body_filter = ngx_http_helloworld_response_body_filter;
 
-    ngx_http_next_request_body_filter = ngx_http_helloworld_request_body_filter;
+    ngx_http_next_request_body_filter = ngx_http_top_request_body_filter;
+    ngx_http_top_request_body_filter = ngx_http_helloworld_request_body_filter;
     return NGX_OK;
 }
 
