@@ -37,10 +37,13 @@ static ngx_command_t ngx_http_helloworld_commands[] = {
     {ngx_string("helloworld"),
      NGX_HTTP_MAIN_CONF | NGX_HTTP_SRV_CONF | NGX_HTTP_LOC_CONF |
          NGX_CONF_TAKE1,
+     // 使用 nginx 的str_xxx helper 要传 .offset
+     // 帮助 helper 找到要修改的值相对于 .conf 的偏移量
+     // 如果使用自己的 .set, .offset值多少 无所谓了，因为你知道怎么修改
      ngx_conf_set_str_slot,
-     // 如果 conf 是0，会报 duplicate 错误
+     // conf 是 0 会报 duplicate 错误
      // 因为http总是会将http_conf_ctx的main_conf传入 ngx_conf_set_str_slot
-     // 二次call 时 ngx_conf_set_str_slot，检测到field->data有值报错
+     // 二次 call ngx_conf_set_str_slot 时检测到field->data有值报错
 
      //  NGX_HTTP_LOC_CONF_OFFSET
      //  会确保nginx总是从ngx_http_conf_ctx_t找到loc_conf传递
@@ -163,7 +166,8 @@ static ngx_int_t ngx_http_helloworld_post_conf(ngx_conf_t *cf) {
     ngx_http_top_body_filter = ngx_http_helloworld_response_body_filter;
 
     // 请求需要带body
-    // curl -X POST -sL localhost:1888/cc-api -H "Host: localhost" --data "{}" -vvv
+    // curl -X POST -sL localhost:1888/cc-api -H "Host: localhost" --data "{}"
+    // -vvv
     ngx_http_next_request_body_filter = ngx_http_top_request_body_filter;
     ngx_http_top_request_body_filter = ngx_http_helloworld_request_body_filter;
     return NGX_OK;
