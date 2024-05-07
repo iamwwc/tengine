@@ -104,6 +104,8 @@ static ngx_int_t ngx_http_log_filter_log_handler(ngx_http_request_t *r) {
                           v->len, v->data);
         }
     }
+    ngx_log_error(NGX_LOG_INFO, r->connection->log, 0,
+                  "response header type %V", &r->headers_out.content_type);
     return NGX_OK;
 }
 

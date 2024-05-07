@@ -417,7 +417,7 @@ ngx_xquic_process_init(ngx_cycle_t *cycle)
             ngx_udpv2_push_dispatch_filter(cycle, &ls[i], ngx_xquic_udp_accept_filter);
         }
 #endif
-
+        // udp recv 回调，进入quic context
         rev->handler = ngx_xquic_event_recv;
         c->data = qmcf;
         if (c->data == NULL) {
