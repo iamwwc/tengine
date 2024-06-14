@@ -6,6 +6,7 @@
 	--with-debug \
 	--with-http_ssl_module \
 	--with-openssl-async \
+	--with-http_v2_module \
 	--add-module=modules/ngx_http_cc_access_module \
     --add-module=modules/ngx_http_path_req_limit_module \
 	--add-module=modules/ngx_http_helloworld_module \

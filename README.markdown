@@ -1,7 +1,7 @@
 ### 初始化
 
 ```bash
-./configure.sh
+./configure-feat.sh
 ```
 
 ### 编译
