@@ -3366,6 +3366,8 @@ ngx_ssl_write(ngx_connection_t *c, u_char *data, size_t size)
 
 #if (NGX_SSL && NGX_SSL_ASYNC)
     if (c->async_enable && sslerr == SSL_ERROR_WANT_ASYNC) {
+        // 底层 async job返回状态链 ASYNC_PAUSE -> SSL_ASYNC_PAUSED -> SSL_ERROR_WANT_ASYNC
+        // https://www.openssl.org/docs/man1.1.1/man3/ASYNC_start_job.html
         c->async->handler = ngx_ssl_write_async_handler;
         c->read->saved_handler = c->read->handler;
         c->read->handler = ngx_ssl_empty_handler;
