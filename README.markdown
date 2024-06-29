@@ -13,7 +13,7 @@
 ### 运行
 
 ```bash
-sudo ./target/sbin/nginx -p target/ -c conf/nginx.conf
+sudo ./target/sbin/nginx -p $(pwd)/target -c conf/nginx.conf
 ```
 
 ### 签发证书

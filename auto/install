@@ -156,7 +156,7 @@ install:	build $NGX_INSTALL_PERL_MODULES
 	test -d '\$(DESTDIR)$NGX_PREFIX/html' \\
 		|| cp -R $NGX_HTML '\$(DESTDIR)$NGX_PREFIX'
 	cp -R upstreams '\$(DESTDIR)$NGX_PREFIX/upstreams'
-	cp -R certificates '\$(DESTDIR)$NGX_PREFIX/certificates'
+	cp -R certificates '\$(DESTDIR)$NGX_PREFIX'
 	cp -R ipblock.txt '\$(DESTDIR)$NGX_PREFIX/ipblock.txt'
 END
 
